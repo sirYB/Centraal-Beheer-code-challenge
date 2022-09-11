@@ -1,0 +1,23 @@
+<span *ngIf="vehicleType != VehicleTypes.Scooter; else scooterText" class="text-gray-700">
+  Welk type {{vehicleType | lowercase}} hebt u?
+</span>
+
+<ng-template #scooterText>Geen scooter selecties beschikbaar</ng-template>
+
+<div [formGroup]="vehicleFormGroup">
+  <select formControlName="vehicleSubtype" [disabled]="vehicleType == VehicleTypes.Scooter"
+    class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+    name="vehicle-subtype">
+
+    <ng-container *ngIf="vehicleType == VehicleTypes.Auto">
+      <option *ngFor="let carSubType of carSubTypes"> {{carSubType}}</option>
+    </ng-container>
+    <ng-container *ngIf="vehicleType == VehicleTypes.Motor">
+      <option *ngFor="let motorSubtype of motorSubTypes"> {{motorSubtype}}</option>
+    </ng-container>
+    <ng-container *ngIf="vehicleType == VehicleTypes.Scooter">
+      <option>-</option>
+    </ng-container>
+
+  </select>
+</div>
