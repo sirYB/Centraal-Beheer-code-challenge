@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { KentekenCheck } from 'rdw-kenteken-check';
+import { LicensePlateCheckerService } from '../license-plate-checker.service';
 
 @Component({
   selector: 'app-licenseplate-check',
@@ -13,7 +14,7 @@ export class LicenseplateCheckComponent implements OnInit {
 
   public invalidLicensePlate: boolean = false;
 
-  constructor() {}
+  constructor(private licensePlateChecker: LicensePlateCheckerService) {}
 
   ngOnInit(): void {}
 
@@ -31,25 +32,8 @@ export class LicenseplateCheckComponent implements OnInit {
 
   public formatLicensePlate(event: KeyboardEvent): void {
     let licensePlateString = this.vehicleFormGroup.controls['licensePlate'].value;
-
-    //Dit kan beter met een slimmere REGEX!
     if (licensePlateString) {
-      if (event.key.match(/[A-Za-z]/)) {
-        if (licensePlateString.slice(-1).match(/[0-9]/)) {
-          this.vehicleFormGroup.controls['licensePlate'].setValue(licensePlateString + '-');
-        }
-        if (licensePlateString.slice(-2).match(/[A-Za-z]/)) {
-          let segment = licensePlateString.slice(-2);
-          if (segment.length == 2 && segment.match(/^[a-zA-Z]+$/)) {
-            this.vehicleFormGroup.controls['licensePlate'].setValue(licensePlateString + '-');
-          }
-        }
-      }
-      else if (event.key.match(/[0-9]/)) {
-        if (licensePlateString.slice(-1).match(/[A-Za-z]/)) {
-          this.vehicleFormGroup.controls['licensePlate'].setValue(licensePlateString + '-');
-        }
-      }
+      this.vehicleFormGroup.controls['licensePlate'].setValue(this.licensePlateChecker.formatLicensePlate(event, licensePlateString));
     }
   }
 }
